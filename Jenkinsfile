@@ -23,7 +23,7 @@ pipeline {
 
         stage('Nexus IQ Scan'){
             steps {
-                nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: 'webgoat-pac', iqStage: 'build', jobCredentialsId: ''
+                nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: 'webgoat-server-side', iqStage: 'build', jobCredentialsId: ''
             }
         }    
     }
