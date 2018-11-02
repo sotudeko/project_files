@@ -27,7 +27,7 @@ pipeline {
                 echo "====================================="
                 echo 'IQ scan results'
                 echo "-------------------------------------"
-                echo ${policyEvaluation}
+                sh 'echo ${policyEvaluation}'
                 echo "====================================="
             }
         }    
