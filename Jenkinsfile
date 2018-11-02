@@ -23,7 +23,9 @@ pipeline {
 
         stage('Nexus IQ Scan'){
             steps {
+                script{
                 def policyEvaluation = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: 'webgoat-server-side', iqStage: 'build', jobCredentialsId: ''
+                }
                 echo "====================================="
                 echo 'IQ scan results'
                 echo "-------------------------------------"
