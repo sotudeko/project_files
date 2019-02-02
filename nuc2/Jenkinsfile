@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        DEV_REPO = 'jenkins-lab-dev'
+	    TEST_REPO = 'jenkins-lab-test'
+		GOAL = 'package'
+		IQ_APPNAME = 'nuc'
+        SCAN_URL = ''
+    }
+
+    stages {
+
+        stage('Build') {
+            steps {
+                sh 'mvn -B -Dproject.version=$BUILD_VERSION -Dmaven.test.failure.ignore clean ${GOAL}'
+            }
+            post {
+                success {
+                    echo 'Now archiving...'
+		            archiveArtifacts artifacts: "**/target/*.war"
+                }
+            }
+        }
+
+		stage('Nexus IQ Scan') {
+      		steps {
+				script {
+					def policyEvaluation = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: 'nuc', iqStage: 'build', jobCredentialsId: 'ci-user'
+                    SCAN_URL = "${policyEvaluation.applicationCompositionReportUrl}"
+                }
+      		}
+    	}
+
+        stage('Tag and upload build component'){
+            steps {
+                echo "scan url: ${SCAN_URL}"
+                echo "user: ${USER}"
+                echo "job name: ${JOB_NAME}"
+                echo "build id: ${BUILD_ID}"
+                echo "build url: ${BUILD_URL}"
+                echo "build tag: ${BUILD_TAG}"
+                echo "build version: ${BUILD_VERSION}"
+            }
+        }
+    }
+}
+
+

@@ -1,0 +1,8 @@
+{
+  "name": "simple-npm-app",
+  "version": "0.0.1",
+  "description": "Simple NPM App",
+  "dependencies": {
+    "commonjs": "0.0.1"
+  }
+}

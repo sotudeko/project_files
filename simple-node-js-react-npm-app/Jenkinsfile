@@ -1,0 +1,51 @@
+pipeline {
+    // agent {
+    //     docker {
+    //         image 'node:6-alpine'
+    //         args '-p 3000:3000'
+    //     }
+    // }
+    agent any
+    
+    environment {
+        CI = 'true' 
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Nexus IQ Scan') {
+      		steps {
+				script {
+					def policyEvaluation = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: 'simple-node-app', iqStage: 'build', jobCredentialsId: 'ci-user'
+                    SCAN_URL = "${policyEvaluation.applicationCompositionReportUrl}"
+                }
+      		}
+    	}
+        stage('Tag and upload build component'){
+            steps {
+                echo "scan url: ${SCAN_URL}"
+                echo "user: ${USER}"
+                echo "job name: ${JOB_NAME}"
+                echo "build id: ${BUILD_ID}"
+                echo "build url: ${BUILD_URL}"
+                echo "build tag: ${BUILD_TAG}"
+                echo "build version: ${BUILD_VERSION}"
+            }
+        }
+        stage('Test') { 
+            steps {
+                sh './jenkins/scripts/test.sh' 
+            }
+        }
+        stage('Deliver') {
+            steps {
+                sh './jenkins/scripts/deliver.sh'
+                input message: 'Finished using the web site? (Click "Proceed" to continue)'
+                sh './jenkins/scripts/kill.sh'
+            }
+        }
+    }
+}

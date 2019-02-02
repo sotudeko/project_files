@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+
+    environment {
+	PROD_REPO = 'jenkins-lab-prod'
+	GOAL = 'package'
+    }
+
+    stages {
+
+        stage('Promote Tag to Prod repo') {
+        }
+
+    }
+}
+
+

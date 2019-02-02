@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+
+    environment {
+	TEST_REPO = 'jenkins-lab-test'
+    }
+
+    stages {
+
+        stage('Promote Tag to Test Repo') {
+        }
+
+    }
+}
+
+
